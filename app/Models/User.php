@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relasi: User sebagai guru yang memiliki kelas
+    public function teachingClasses()
+    {
+        return $this->hasMany(Classroom::class, 'teacher_id');
+    }
+
+    // Relasi: User sebagai siswa yang mengikuti kelas
+    public function enrolledClasses()
+    {
+        return $this->belongsToMany(Classroom::class, 'class_user');
+    }
+
+    // Relasi: User sebagai siswa yang menyelesaikan tugas
+    public function taskCompletions()
+    {
+        return $this->hasMany(TaskCompletion::class, 'student_id');
     }
 }
