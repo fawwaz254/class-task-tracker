@@ -20,7 +20,10 @@
             membuat tugas, dan memantau penyelesaian tugas siswa.
         </p>
 
-        <p>Fitur pengelolaan tugas akan tersedia pada tahap berikutnya.</p>
+        <a href="{{ route('teacher.tasks.index') }}"
+        style="display: inline-block; background: #2563eb; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none;">
+            Kelola Tugas
+        </a>
     </div>
 
 @endsection

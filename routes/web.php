@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\TaskController;
 
 
     // Halaman awal
@@ -43,6 +44,11 @@ use Illuminate\Http\Request;
         Route::get('/teacher/dashboard', function () {
             return view('dashboard.teacher');
         });
+
+        // CRUD tugas guru
+        Route::resource('teacher/tasks', TaskController::class)
+            ->except(['show'])
+            ->names('teacher.tasks');
 
     });
 
