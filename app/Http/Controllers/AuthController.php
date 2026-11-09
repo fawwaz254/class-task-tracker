@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/dashboard');
+        return $this->redirectByRole();
     }
 
     // Menampilkan halaman login
@@ -55,7 +55,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard');
+            return $this->redirectByRole();
         }
 
         return back()->withErrors([
@@ -72,5 +72,14 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    private function redirectByRole()
+    {
+        if (Auth::user()->role === 'teacher') {
+            return redirect('/teacher/dashboard');
+        }
+
+        return redirect('/student/dashboard');
     }
 }
