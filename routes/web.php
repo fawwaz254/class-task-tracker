@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\StudentTaskController;
 
 
     // Halaman awal
@@ -55,8 +56,16 @@ use App\Http\Controllers\TaskController;
     // Route khusus siswa
     Route::middleware(['auth', 'role:student'])->group(function () {
 
+        Route::middleware(['auth', 'role:student'])->group(function () {
         Route::get('/student/dashboard', function () {
             return view('dashboard.student');
         });
+
+        Route::get('/student/tasks', [StudentTaskController::class, 'index'])
+            ->name('student.tasks.index');
+
+        Route::post('/student/tasks/{task}/complete', [StudentTaskController::class, 'complete'])
+            ->name('student.tasks.complete');
+    });
 
     });

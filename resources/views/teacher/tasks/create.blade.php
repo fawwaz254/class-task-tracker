@@ -1,102 +1,350 @@
+
 @extends('layouts.app')
 
 @section('title', 'Tambah Tugas')
 
 @section('content')
 
-<div class="card">
+<style>
+    .form-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
 
-    <h1>Tambah Tugas</h1>
-    <p>Buat tugas baru untuk siswa di kelas yang kamu ajar.</p>
+    .page-header {
+        margin-bottom: 23px;
+    }
 
-    <hr>
+    .page-header h1 {
+        color: #0f172a;
+        font-size: 26px;
+        margin-bottom: 7px;
+    }
 
-    @if ($errors->any())
-        <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
-            <strong>Terdapat kesalahan:</strong>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    .page-header p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .form-card-header h2 {
+        color: #0f172a;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .form-card-header p {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .form-body {
+        padding: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .required {
+        color: #dc2626;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 12px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: white;
+        color: #334155;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    .form-hint {
+        display: block;
+        margin-top: 7px;
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .error-box {
+        padding: 14px 17px;
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        margin-bottom: 22px;
+        font-size: 13px;
+    }
+
+    .error-box strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .error-box ul {
+        padding-left: 20px;
+        margin: 0;
+        line-height: 1.7;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+        flex-wrap: wrap;
+    }
+
+    .submit-button {
+        padding: 12px 19px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .submit-button:hover {
+        background: #1d4ed8;
+    }
+
+    .cancel-button {
+        display: inline-block;
+        padding: 12px 18px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .cancel-button:hover {
+        background: #e2e8f0;
+    }
+
+    @media (max-width: 600px) {
+        .page-header h1 {
+            font-size: 23px;
+        }
+
+        .form-body {
+            padding: 19px;
+        }
+
+        .form-card-header {
+            padding: 18px 19px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .submit-button,
+        .cancel-button {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="form-container">
+
+    {{-- Page Header --}}
+    <div class="page-header">
+        <h1>Tambah Tugas</h1>
+        <p>
+            Buat tugas baru dan tentukan kelas serta batas waktu
+            pengumpulan untuk siswa.
+        </p>
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-card-header">
+            <h2>Informasi Tugas</h2>
+            <p>Lengkapi informasi berikut untuk membuat tugas baru.</p>
         </div>
-    @endif
 
-    <form action="{{ route('teacher.tasks.store') }}" method="POST">
-        @csrf
+        <div class="form-body">
 
-        <div style="margin-bottom: 18px;">
-            <label for="title"><strong>Judul Tugas</strong></label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                value="{{ old('title') }}"
-                placeholder="Contoh: Membuat Website Profil"
-                required
-                style="display: block; width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px;"
-            >
-        </div>
+            {{-- Validation Errors --}}
+            @if ($errors->any())
+                <div class="error-box">
+                    <strong>Terdapat kesalahan pada formulir:</strong>
 
-        <div style="margin-bottom: 18px;">
-            <label for="description"><strong>Deskripsi Tugas</strong></label>
-            <textarea
-                id="description"
-                name="description"
-                rows="5"
-                placeholder="Tuliskan instruksi atau detail tugas..."
-                style="display: block; width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px;"
-            >{{ old('description') }}</textarea>
-        </div>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <div style="margin-bottom: 18px;">
-            <label for="class_id"><strong>Kelas</strong></label>
-            <select
-                id="class_id"
-                name="class_id"
-                required
-                style="display: block; width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px;"
-            >
-                <option value="">-- Pilih Kelas --</option>
+            {{-- Create Task Form --}}
+            <form action="{{ route('teacher.tasks.store') }}" method="POST">
+                @csrf
 
-                @foreach ($classes as $class)
-                    <option
-                        value="{{ $class->id }}"
-                        {{ old('class_id') == $class->id ? 'selected' : '' }}
+                {{-- Task Title --}}
+                <div class="form-group">
+                    <label for="title">
+                        Judul Tugas <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        class="form-control"
+                        value="{{ old('title') }}"
+                        placeholder="Contoh: Membuat Website Profil"
+                        required
                     >
-                        {{ $class->name }}
-                    </option>
-                @endforeach
-            </select>
+
+                    <span class="form-hint">
+                        Masukkan judul yang jelas dan mudah dipahami siswa.
+                    </span>
+                </div>
+
+                {{-- Task Description --}}
+                <div class="form-group">
+                    <label for="description">
+                        Deskripsi Tugas
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Tuliskan instruksi atau detail tugas..."
+                    >{{ old('description') }}</textarea>
+
+                    <span class="form-hint">
+                        Berikan instruksi atau penjelasan mengenai tugas yang diberikan.
+                    </span>
+                </div>
+
+                {{-- Classroom --}}
+                <div class="form-group">
+                    <label for="class_id">
+                        Kelas <span class="required">*</span>
+                    </label>
+
+                    <select
+                        id="class_id"
+                        name="class_id"
+                        class="form-control"
+                        required
+                    >
+                        <option value="">-- Pilih Kelas --</option>
+
+                        @foreach ($classes as $class)
+                            <option
+                                value="{{ $class->id }}"
+                                {{ old('class_id') == $class->id ? 'selected' : '' }}
+                            >
+                                {{ $class->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <span class="form-hint">
+                        Pilih kelas yang akan menerima tugas ini.
+                    </span>
+                </div>
+
+                {{-- Due Date --}}
+                <div class="form-group">
+                    <label for="due_date">
+                        Batas Waktu Pengumpulan <span class="required">*</span>
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="due_date"
+                        name="due_date"
+                        class="form-control"
+                        value="{{ old('due_date') }}"
+                        required
+                    >
+
+                    <span class="form-hint">
+                        Tentukan tanggal dan waktu terakhir pengumpulan tugas.
+                    </span>
+                </div>
+
+                {{-- Form Actions --}}
+                <div class="form-actions">
+
+                    <button type="submit" class="submit-button">
+                        Simpan Tugas
+                    </button>
+
+                    <a
+                        href="{{ route('teacher.tasks.index') }}"
+                        class="cancel-button"
+                    >
+                        Batal
+                    </a>
+
+                </div>
+
+            </form>
+
         </div>
-
-        <div style="margin-bottom: 18px;">
-            <label for="due_date"><strong>Batas Waktu Pengumpulan</strong></label>
-            <input
-                type="datetime-local"
-                id="due_date"
-                name="due_date"
-                value="{{ old('due_date') }}"
-                required
-                style="display: block; width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #d1d5db; border-radius: 6px;"
-            >
-        </div>
-
-        <button
-            type="submit"
-            style="background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer;"
-        >
-            Simpan Tugas
-        </button>
-
-        <a
-            href="{{ route('teacher.tasks.index') }}"
-            style="margin-left: 10px; color: #475569; text-decoration: none;"
-        >
-            Batal
-        </a>
-
-    </form>
+    </div>
 
 </div>
 
