@@ -22,7 +22,12 @@ class Classroom extends Model
     // Siswa yang mengikuti kelas
     public function students()
     {
-        return $this->belongsToMany(User::class, 'class_user');
+        return $this->belongsToMany(
+            User::class,
+            'class_user',
+            'class_id',
+            'user_id'
+        );
     }
 
     // Daftar tugas dalam kelas

@@ -56,7 +56,12 @@ class User extends Authenticatable
     // Relasi: User sebagai siswa yang mengikuti kelas
     public function enrolledClasses()
     {
-        return $this->belongsToMany(Classroom::class, 'class_user');
+        return $this->belongsToMany(
+            Classroom::class,
+            'class_user',
+            'user_id',
+            'class_id'
+        );
     }
 
     // Relasi: User sebagai siswa yang menyelesaikan tugas
